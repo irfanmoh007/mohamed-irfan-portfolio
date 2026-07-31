@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-dark: #08090c;
+  --color-text-primary: #e4ded7;
+  --color-text-muted: #86888f;
+  --color-accent-rust: #df5838;
+  --color-accent-glow: rgba(223, 88, 56, 0.15);
+  --color-border-subtle: rgba(228, 222, 215, 0.08);
+
+  --font-display: var(--font-syne), sans-serif;
+  --font-sans: var(--font-syne), sans-serif;
+}
+
+/* --- Document Setup --- */
+:root {
+  --bg-color: #08090c;
+  --text-primary: #e4ded7;
+  --text-muted: #86888f;
+  --accent-color: #df5838;
+  --border-color: rgba(228, 222, 215, 0.08);
+}
+
+html, body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-syne), sans-serif;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(228, 222, 215, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(228, 222, 215, 0.3);
+}
+
+/* --- Background Grid & Ambient Glows --- */
+.bg-grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 5vw;
+}
+
+.grid-line.vertical {
+  width: 1px;
+  height: 100%;
+  background-color: var(--border-color);
+  opacity: 0.6;
+}
+
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+/* --- Custom Equalizer & Capsule Animations --- */
+@keyframes pulse-opacity {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+@keyframes pill-scanning {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+@keyframes bounce-bar {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1.1); }
+}
+
+@keyframes scroll-progress {
+  0% { transform: translateY(-100%); }
+  50% { transform: translateY(120%); }
+  100% { transform: translateY(120%); }
+}
+
+/* Utility animation bindings */
+.animate-pulse-sep {
+  animation: pulse-opacity 1s infinite alternate;
+}
+
+.animate-scanline {
+  animation: pill-scanning 2.5s linear infinite;
+}
+
+.animate-scroll-bar {
+  animation: scroll-progress 1.8s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+}
+
+/* Equalizer Bars Delay Configurations */
+.animate-bounce-bar-1 { animation: bounce-bar 1.2s ease-in-out infinite alternate; animation-delay: 0.1s; height: 40%; }
+.animate-bounce-bar-2 { animation: bounce-bar 1.2s ease-in-out infinite alternate; animation-delay: 0.3s; height: 80%; }
+.animate-bounce-bar-3 { animation: bounce-bar 1.2s ease-in-out infinite alternate; animation-delay: 0.2s; height: 100%; }
+.animate-bounce-bar-4 { animation: bounce-bar 1.2s ease-in-out infinite alternate; animation-delay: 0.4s; height: 60%; }
+.animate-bounce-bar-5 { animation: bounce-bar 1.2s ease-in-out infinite alternate; animation-delay: 0.15s; height: 50%; }
+
+/* --- Responsive Helpers --- */
+@media (max-width: 768px) {
+  .decryption-path-container {
+    display: none !important;
+  }
+}
