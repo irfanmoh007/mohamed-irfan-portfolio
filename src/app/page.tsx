@@ -1,131 +1,162 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { NameHeader } from '@/components/NameHeader';
 import { ProfileCard } from '@/components/ProfileCard';
 import { DecryptionContainer } from '@/components/DecryptionContainer';
+import { AboutMe } from '@/components/AboutMe';
+import { SectionTransition } from '@/components/SectionTransition';
+import { Skills } from '@/components/Skills';
+import { ThreatTransition } from '@/components/ThreatTransition';
+import { Projects } from '@/components/Projects';
+import { MissionLogTransition } from '@/components/MissionLogTransition';
+import { MissionLog } from '@/components/MissionLog';
+import { CertificatesDivider } from '@/components/CertificatesDivider';
+import { CertificatesArchive } from '@/components/CertificatesArchive';
+import { LetsConnect } from '@/components/LetsConnect';
+import { HeroNavDock } from '@/components/HeroNavDock';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+const WORDS = ['DETECT', 'DEFEND', 'DESIGN'];
 
 export default function Home() {
-  const [progress, setProgress] = useState(0);
   const [showPreloader, setShowPreloader] = useState(true);
+  const [skillsRevealState, setSkillsRevealState] = useState<'hidden' | 'reveal'>('hidden');
+  const lineRef = useRef<HTMLDivElement>(null);
+  const preloaderRef = useRef<HTMLDivElement>(null);
+  const aboutMeRef = useRef<HTMLElement>(null);
+  const hasAnimated = useRef(false);
 
-  // Preloader progress loop and GSAP slide-up reveal trigger
+  // Recalculate ScrollTrigger offsets once preloader is gone
   useEffect(() => {
-    let currentProgress = 0;
-    const interval = setInterval(() => {
-      // Fast progress ticks completing in ~300ms
-      currentProgress += Math.floor(Math.random() * 8) + 4;
-      
-      if (currentProgress >= 100) {
-        currentProgress = 100;
-        clearInterval(interval);
+    if (!showPreloader) {
+      ScrollTrigger.refresh();
+    }
+  }, [showPreloader]);
 
-        const tl = gsap.timeline();
+  useEffect(() => {
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
 
-        // 1. Fade and slide out preloader upward
-        tl.to('.preloader', {
-          opacity: 0,
-          y: '-100%',
-          duration: 0.8,
-          ease: 'power3.inOut',
-          onComplete: () => {
-            setShowPreloader(false);
-          }
+    const line = lineRef.current;
+    const preloader = preloaderRef.current;
+    if (!preloader || !line) return;
+
+    // Start hidden below
+    // Line is already opacity-0 via CSS; GSAP starts it 90px below so it's fully hidden
+    gsap.set(line, { y: 90, autoAlpha: 0 });
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        // Theater curtain: whole preloader slides UP off screen
+        gsap.to(preloader, {
+          yPercent: -100,
+          duration: 1.1,
+          ease: 'power4.inOut',
+          onComplete: () => setShowPreloader(false),
         });
+      },
+    });
 
-        // 2. Staggered reveal slide-up for title characters
-        tl.to('.char-child', {
-          y: '0%',
-          duration: 0.8,
-          stagger: 0.04,
-          ease: 'power4.out',
-          clearProps: 'transform' // clean properties after transform
-        }, '-=0.4'); // slight overlap
+    // Rise up and fade in
+    tl.to(line, {
+      y: 0,
+      autoAlpha: 1,
+      duration: 0.7,
+      ease: 'power3.out',
+    });
 
-        // 3. Staggered decryption scramble on letters
-        tl.fromTo('.char-child', 
-          { textShadow: 'none' },
-          {
-            textShadow: '0 0 8px rgba(228, 222, 215, 0.3)',
-            duration: 0.4,
-            stagger: 0.04
-          },
-          '-=0.6'
-        );
-      }
-      setProgress(currentProgress);
-    }, 22);
+    // Hold for a moment
+    tl.to({}, { duration: 0.9 });
 
-    return () => clearInterval(interval);
+    // Slide out upward
+    tl.to(line, {
+      y: -60,
+      autoAlpha: 0,
+      duration: 0.5,
+      ease: 'power3.in',
+    });
+
+    // Pause before curtain lifts
+    tl.to({}, { duration: 0.15 });
   }, []);
 
   return (
-    <main className="flex-grow flex flex-col justify-between relative overflow-hidden">
+    <main className="flex-grow flex flex-col justify-between relative overflow-x-hidden">
+
       {/* 1. Custom Preloader */}
       {showPreloader && (
-        <div className="preloader fixed top-0 left-0 w-full h-full bg-[var(--bg-color)] z-[9999] flex justify-center items-center">
-          <div className="preloader-wrap w-[90%] max-w-[400px] text-center">
-            <div className="preloader-text font-display font-bold text-[0.85rem] tracking-[0.2em] text-[var(--text-primary)] flex justify-between items-center mb-5">
-              <span className="word">DESIGNER</span>
-              <span className="separator animate-pulse-sep text-[var(--color-accent-rust)]">•</span>
-              <span className="word">DEVELOPER</span>
-              <span className="separator animate-pulse-sep text-[var(--color-accent-rust)]">•</span>
-              <span className="word">CREATIVE</span>
-            </div>
-            <div className="preloader-bar w-full h-[2px] bg-[var(--color-border-subtle)] overflow-hidden rounded-[2px]">
-              <div 
-                className="preloader-progress h-full bg-[var(--text-primary)] transition-[width] duration-75 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+        <div
+          ref={preloaderRef}
+          className="fixed inset-0 bg-[var(--bg-color)] z-[9999] flex items-center justify-center will-change-transform"
+        >
+          {/* Single line: DETECT · DEFEND · DESIGN */}
+          <div
+            ref={lineRef}
+            className="opacity-0 flex items-center gap-4 font-display font-extrabold text-[clamp(1.4rem,3.5vw,2.2rem)] tracking-[0.18em] text-[var(--color-text-primary)] select-none whitespace-nowrap"
+          >
+            <span>DETECT</span>
+            <span className="text-[var(--color-accent-rust)]">.</span>
+            <span>DEFEND</span>
+            <span className="text-[var(--color-accent-rust)]">.</span>
+            <span>DESIGN</span>
           </div>
         </div>
       )}
 
       {/* 2. Hero Section Wrapper */}
-      <section className="hero-section relative w-full min-h-screen flex flex-col justify-between px-[5vw] pt-[140px] pb-[40px] z-5 overflow-hidden">
-        
-        {/* Big Name Header & Interactive Spotlight Tilt Card */}
+      <section id="home" className="hero-section relative w-full min-h-screen flex flex-col justify-between px-[5vw] pt-[140px] pb-[40px] z-5 overflow-hidden">
+
+        {/* Big Name Header & Interactive Spotlight Tilt Card (Structured unified composition) */}
         <div className="hero-content flex-grow flex flex-col justify-center items-center relative w-full">
-          <NameHeader />
-          <ProfileCard />
+          <div className="hero-composition-container relative flex flex-col justify-center items-center w-full -translate-y-[9vh]">
+            <NameHeader triggerReveal={!showPreloader} />
+            <ProfileCard />
+          </div>
         </div>
 
-        {/* Dynamic Continuous Decryption Marquee (Wisprflow circular loop) */}
+        {/* Dynamic Continuous Decryption Marquee */}
         <DecryptionContainer />
 
-        {/* Bottom Callout Info Footer */}
-        <div className="hero-footer grid grid-cols-2 gap-20 border-t border-[var(--color-border-subtle)] pt-[30px] z-10 md:grid-cols-2 grid-cols-1">
-          <div className="footer-col flex flex-col gap-2">
-            <div className="label-muted font-display text-[0.6rem] font-bold tracking-[0.2em] text-[var(--color-text-muted)]">
-              SERVICES
-            </div>
-            <p className="footer-text font-accent text-[0.85rem] leading-[1.5] text-[var(--color-text-primary)] font-light tracking-[0.02em] max-w-[420px]">
-              Full Stack Web Engineering • Highly Interactive UI Design • Creative Web Experiences
-            </p>
-          </div>
-          <div className="footer-col flex flex-col gap-2">
-            <div className="label-muted font-display text-[0.6rem] font-bold tracking-[0.2em] text-[var(--color-text-muted)]">
-              FOCUS
-            </div>
-            <p className="footer-text font-accent text-[0.85rem] leading-[1.5] text-[var(--color-text-primary)] font-light tracking-[0.02em] max-w-[420px]">
-              Designing visually premium and high-performance digital products that tell a story.
-            </p>
-          </div>
-        </div>
-
-        {/* Scroll down indicator */}
-        <div className="scroll-indicator absolute bottom-[30px] left-1/2 -translate-x-1/2 flex flex-col items-center gap-[10px] opacity-40 hover:opacity-80 transition-opacity duration-300 pointer-events-auto select-none z-10">
-          <span className="scroll-text font-display text-[0.55rem] font-semibold tracking-[0.25em] text-[var(--color-text-primary)] whitespace-nowrap">
-            SCROLL TO DISCOVER
-          </span>
-          <div className="scroll-line w-[1px] h-[40px] bg-white/10 overflow-hidden relative">
-            <div className="scroll-line-progress w-full h-[30%] bg-[var(--color-text-primary)] absolute top-0 animate-scroll-bar" />
-          </div>
-        </div>
-
       </section>
+
+      {/* 3. Pinned Scroll-Driven About Me Section */}
+      <AboutMe ref={aboutMeRef} />
+
+      {/* 4. Standalone Scroll-Driven Shared Element Transition */}
+      <SectionTransition 
+        aboutMeRef={aboutMeRef} 
+        onTitleRevealComplete={() => setSkillsRevealState('reveal')}
+        onReset={() => setSkillsRevealState('hidden')}
+      />
+
+      {/* 5. Skills Grid Section */}
+      <Skills state={skillsRevealState} />
+
+      {/* 6. Cinematic Threat Detection Transition */}
+      <ThreatTransition />
+
+      {/* 7. Ultra-Premium Interactive Projects Showcase */}
+      <Projects />
+
+      {/* 8. Encrypted ASCII Transition into Mission Log */}
+      <MissionLogTransition />
+
+      {/* 9. Mission Log (Experience Timeline) */}
+      <MissionLog />
+
+      {/* 10. Living Cyber Text Path Divider */}
+      <CertificatesDivider />
+
+      {/* 11. Certification Archive (4-Column Parallax Gallery) */}
+      <CertificatesArchive />
+
+      {/* 12. Final Cinematic "Let's Connect" Section */}
+      <LetsConnect />
+
+      {/* 13. Persistent Viewport Floating Navigation Dock */}
+      <HeroNavDock />
     </main>
   );
 }

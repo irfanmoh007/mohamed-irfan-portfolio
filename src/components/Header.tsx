@@ -90,25 +90,20 @@ export const Header: React.FC = () => {
         </a>
       </div>
       
-      <nav className="nav flex gap-[32px] bg-[rgba(8,9,12,0.6)] px-[24px] py-[10px] rounded-[30px] border border-[var(--color-border-subtle)] backdrop-blur-[12px] pointer-events-auto">
-        <a href="#home" className="nav-link font-display text-[0.75rem] font-medium uppercase tracking-[0.1em] text-[var(--color-text-muted)] no-underline hover:text-[var(--color-text-primary)] active-link relative py-[4px] after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-[1px] after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full active-link:after:w-full">
-          Home
-        </a>
-        <a href="#work" className="nav-link font-display text-[0.75rem] font-medium uppercase tracking-[0.1em] text-[var(--color-text-muted)] no-underline hover:text-[var(--color-text-primary)] relative py-[4px] after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-[1px] after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full">
-          Work
-        </a>
-        <a href="#about" className="nav-link font-display text-[0.75rem] font-medium uppercase tracking-[0.1em] text-[var(--color-text-muted)] no-underline hover:text-[var(--color-text-primary)] relative py-[4px] after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-[1px] after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full">
-          About
-        </a>
-        <a href="#skills" className="nav-link font-display text-[0.75rem] font-medium uppercase tracking-[0.1em] text-[var(--color-text-muted)] no-underline hover:text-[var(--color-text-primary)] relative py-[4px] after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-[1px] after:bg-[var(--color-text-primary)] after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full">
-          Skills
-        </a>
-      </nav>
-      
+
       <div className="header-action pointer-events-auto">
         <a 
           ref={btnRef}
-          href="mailto:contact@mohamedirfan.dev" 
+          href="#lets-connect" 
+          onClick={(e) => {
+            e.preventDefault();
+            const targetEl = document.getElementById('lets-connect');
+            if (targetEl) {
+              const rect = targetEl.getBoundingClientRect();
+              const scrollTop = window.scrollY || document.documentElement.scrollTop;
+              window.scrollTo({ top: rect.top + scrollTop, behavior: 'smooth' });
+            }
+          }}
           className="group/btn btn btn-primary inline-flex items-center gap-[10px] px-[24px] py-[12px] rounded-[8px] text-[0.75rem] font-semibold uppercase tracking-[0.1em] no-underline border border-[var(--color-text-primary)] text-[var(--color-text-primary)] transition-all duration-300 hover:bg-[var(--color-text-primary)] hover:text-[var(--color-bg-dark)]"
         >
           <span>LET'S TALK</span>

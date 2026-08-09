@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Syne } from "next/font/google";
+import { Syne, Roboto } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 
@@ -7,6 +7,13 @@ const syne = Syne({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-syne",
+  display: "swap",
+});
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-roboto",
   display: "swap",
 });
 
@@ -21,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${syne.variable} h-full antialiased`}>
+    <html lang="en" className={`${syne.variable} ${roboto.variable} h-full antialiased`}>
       <body className="bg-bg-dark text-text-primary min-h-full flex flex-col relative font-sans">
         
         {/* Background Grids & Ambient Lights */}

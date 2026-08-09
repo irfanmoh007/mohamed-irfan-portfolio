@@ -2,31 +2,43 @@
 
 @theme {
   --color-bg-dark: #08090c;
-  --color-text-primary: #e4ded7;
+  --color-brand-primary: #e4ded7;
+  --color-accent: #df5838;
+  --color-surface-card: rgba(12, 13, 18, 0.25);
+  --color-border-subtle: rgba(228, 222, 215, 0.04);
   --color-text-muted: #86888f;
-  --color-accent-rust: #df5838;
+
+  /* Aliases for backwards compatibility */
+  --color-text-primary: var(--color-brand-primary);
+  --color-accent-rust: var(--color-accent);
   --color-accent-glow: rgba(223, 88, 56, 0.15);
-  --color-border-subtle: rgba(228, 222, 215, 0.08);
 
   --font-display: var(--font-syne), sans-serif;
   --font-sans: var(--font-syne), sans-serif;
+  --font-roboto: var(--font-roboto), sans-serif;
 }
 
 /* --- Document Setup --- */
 :root {
   --bg-color: #08090c;
-  --text-primary: #e4ded7;
+  --color-brand-primary: #e4ded7;
+  --color-accent: #df5838;
+  --color-surface-card: rgba(12, 13, 18, 0.25);
+  --color-border-subtle: rgba(228, 222, 215, 0.04);
   --text-muted: #86888f;
-  --accent-color: #df5838;
-  --border-color: rgba(228, 222, 215, 0.08);
+
+  /* Aliases for backwards compatibility */
+  --text-primary: var(--color-brand-primary);
+  --accent-color: var(--color-accent);
+  --border-color: var(--color-border-subtle);
 }
 
 html, body {
   background-color: var(--bg-color);
-  color: var(--text-primary);
+  color: var(--color-brand-primary);
   font-family: var(--font-syne), sans-serif;
   overflow-x: hidden;
-  height: 100%;
+  min-height: 100%;
 }
 
 /* Custom Scrollbar */
@@ -120,4 +132,9 @@ html, body {
   .decryption-path-container {
     display: none !important;
   }
+}
+
+/* --- Parallax Outline Typography --- */
+.text-stroke-white {
+  -webkit-text-stroke: 1px rgba(228, 222, 215, 0.15);
 }
